@@ -14,6 +14,7 @@ using CompanyEmployees.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 using NLog;
 using System.IO;
+using Contracts;
 
 namespace CompanyEmployees
 {
@@ -34,12 +35,11 @@ namespace CompanyEmployees
             services.ConfigureLoggerService();
             services.ConfigureSqlContext(Configuration);
             services.ConfigureRepositoryManager();
-            services.AddAutoMapper(typeof(Startup));
 
             services.AddControllers();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,ILoggerManager logger)
         {
             if (env.IsDevelopment())
             {
@@ -50,6 +50,7 @@ namespace CompanyEmployees
                 app.UseHsts();
             }
 
+            app.ConfigureExceptionHandler(logger);
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCors("CorsPolicy");

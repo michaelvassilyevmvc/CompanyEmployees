@@ -35,5 +35,6 @@ namespace CompanyEmployees.Extensions
                 b => b.MigrationsAssembly("CompanyEmployees")));
 
         public static void ConfigureRepositoryManager(this IServiceCollection services) => services.AddScoped<IRepositoryManager, RepositoryManager>();
+
     }
 }
