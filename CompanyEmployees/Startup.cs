@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.HttpOverrides;
 using NLog;
 using System.IO;
 using Contracts;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.Extensions.Options;
 
 namespace CompanyEmployees
 {
@@ -41,6 +43,7 @@ namespace CompanyEmployees
                 config.RespectBrowserAcceptHeader = true;
                 config.ReturnHttpNotAcceptable = true;
             })
+                .AddNewtonsoftJson()
                 .AddXmlDataContractSerializerFormatters()
                 .AddCustomCsvFormatter();
         }
@@ -74,5 +77,7 @@ namespace CompanyEmployees
                 endpoints.MapControllers();
             });
         }
+
+        
     }
 }
