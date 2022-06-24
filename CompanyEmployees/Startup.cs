@@ -17,6 +17,7 @@ using System.IO;
 using Contracts;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Options;
+using CompanyEmployees.ActionFilters;
 
 namespace CompanyEmployees
 {
@@ -46,6 +47,11 @@ namespace CompanyEmployees
                 .AddNewtonsoftJson()
                 .AddXmlDataContractSerializerFormatters()
                 .AddCustomCsvFormatter();
+            services.AddScoped<ValidationFilterAttribute>();
+            services.AddScoped<ValidateCompanyExistsAttribute>();
+            services.AddScoped<ValidateEmployeeForCompanyExistsAttribute>();
+            services.AddScoped<ExistsCompanyAttribute>();
+            services.AddScoped<ExistsEmployeeForCompanyAttribute>();
 
             services.Configure<ApiBehaviorOptions>(options =>
             {
