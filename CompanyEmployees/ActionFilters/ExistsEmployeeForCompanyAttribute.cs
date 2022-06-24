@@ -32,16 +32,17 @@ namespace CompanyEmployees.ActionFilters
                 return;
             }
 
-            var employees = await _repository.Employee.GetEmployeesAsync(companyId, false);
+            var id = (Guid)context.ActionArguments["id"];
+            var employee = await _repository.Employee.GetEmployeeAsync(companyId, id, false);
 
-            if (employees == null || employees.Count() == 0)
+            if (employee == null)
             {
-                _logger.LogInfo($"Company with id: {companyId} doesn't have employees");
+                _logger.LogInfo($"Employee with id: {id} doesn't exist in the database.");
                 context.Result = new NotFoundResult();
             }
             else
             {
-                context.HttpContext.Items.Add("employees", employees);
+                context.HttpContext.Items.Add("employee", employee);
                 await next();
             }
         }

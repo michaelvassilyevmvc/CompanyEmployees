@@ -9,6 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Entities.RequestFeatures;
+using Newtonsoft.Json;
 
 namespace CompanyEmployees.Controllers
 {
@@ -28,17 +30,8 @@ namespace CompanyEmployees.Controllers
         }
 
         [HttpGet]
-        [ServiceFilter(typeof(ExistsEmployeeForCompanyAttribute))]
-        public async Task<IActionResult> GetEmployeesForCompany(Guid companyId)
-        {
-            var employeesFromDb = HttpContext.Items["employees"] as IEnumerable<Employee>;
-
-            var employeesDto = _mapper.Map<IEnumerable<EmployeeDto>>(employeesFromDb);
-            return Ok(employeesDto);
-        }
-
-        [HttpGet("{id}",Name = "GetEmployeeForCompany")]
-        public async Task<IActionResult> GetEmployeeForCompany(Guid companyId, Guid id)
+        
+        public async Task<IActionResult> GetEmployeesForCompany(Guid companyId, [FromQuery] EmployeeParameters employeeParameters)
         {
             var company = await _repository.Company.GetCompanyAsync(companyId, trackChanges: false);
             if(company == null)
@@ -47,12 +40,18 @@ namespace CompanyEmployees.Controllers
                 return NotFound();
             }
 
-            var employeeDb = await _repository.Employee.GetEmployeeAsync(companyId, id, trackChanges: false);
-            if(employeeDb == null)
-            {
-                _logger.LogInfo($"Employee with id: {id} doesn't exist in the database.");
-                return NotFound();
-            }
+            var employeesFromDb = await _repository.Employee.GetEmployeesAsync(companyId, employeeParameters, trackChanges: false);
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(employeesFromDb.MetaData));
+
+            var employeesDto = _mapper.Map<IEnumerable<EmployeeDto>>(employeesFromDb);
+            return Ok(employeesDto);
+        }
+
+        [HttpGet("{id}",Name = "GetEmployeeForCompany")]
+        [ServiceFilter(typeof(ExistsEmployeeForCompanyAttribute))]
+        public IActionResult GetEmployeeForCompany(Guid companyId, Guid id)
+        {
+            var employeeDb = HttpContext.Items["employee"] as Employee;
 
             var employee = _mapper.Map<EmployeeDto>(employeeDb);
             return Ok(employee);
