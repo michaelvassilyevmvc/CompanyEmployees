@@ -22,6 +22,7 @@ namespace Entities.RequestFeatures
                 _pageSize = (value > maxPageSize) ? maxPageSize : value;
             }
         }
+        public string OrderBy { get; set; }
     }
 
     public class EmployeeParameters : RequestParameters
@@ -31,5 +32,10 @@ namespace Entities.RequestFeatures
 
         public bool ValidAgeRange => MaxAge > MinAge;
         public string SearchTerm { get; set; }
+
+        public EmployeeParameters()
+        {
+            OrderBy = "name";
+        }
     }
 }
