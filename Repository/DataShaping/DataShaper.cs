@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Contracts;
+using Entities.Models;
 
 namespace Repository.DataShaping
 {
@@ -26,7 +27,7 @@ namespace Repository.DataShaping
         public ExpandoObject ShapeData(T entity, string fieldsString)
         {
             var requiredProperties = GetRequiredProperties(fieldsString);
-            return FetchDataForEntity(entity, requiredProperties);
+            return FetchDataForExpandoObject(entity, requiredProperties);
         }
 
         private IEnumerable<PropertyInfo> GetRequiredProperties(string fieldsString)
@@ -38,7 +39,7 @@ namespace Repository.DataShaping
                 var fields = fieldsString.Split(',', StringSplitOptions.RemoveEmptyEntries);
                 foreach (var field in fields)
                 {
-                    var property = Properties.FirstOrDefault(pi => pi.Name.Equals(StringComparison.InvariantCultureIgnoreCase));
+                    var property = Properties.FirstOrDefault(pi => pi.Name.Equals(field.Trim(),StringComparison.InvariantCultureIgnoreCase));
                     if (property == null) continue;
 
                     requiredProperties.Add(property);
@@ -58,13 +59,13 @@ namespace Repository.DataShaping
 
             foreach (var entity in entities)
             {
-                var shapedObject = FetchDataForEntity(entity, requiredProperties);
+                var shapedObject = FetchDataForExpandoObject(entity, requiredProperties);
                 shapedData.Add(shapedObject);
             }
             return shapedData;
         }
 
-        private ExpandoObject FetchDataForEntity(T entity, IEnumerable<PropertyInfo> requiredProperties)
+        private ExpandoObject FetchDataForExpandoObject(T entity, IEnumerable<PropertyInfo> requiredProperties)
         {
             var shapedObject = new ExpandoObject();
 
