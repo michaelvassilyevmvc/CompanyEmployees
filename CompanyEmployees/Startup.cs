@@ -18,6 +18,7 @@ using Contracts;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Options;
 using CompanyEmployees.ActionFilters;
+using Entities.DataTransferObjects;
 
 namespace CompanyEmployees
 {
@@ -52,6 +53,7 @@ namespace CompanyEmployees
             services.AddScoped<ValidateEmployeeForCompanyExistsAttribute>();
             services.AddScoped<ExistsCompanyAttribute>();
             services.AddScoped<ExistsEmployeeForCompanyAttribute>();
+            services.AddScoped<IDataShaper<EmployeeDto>,IDataShaper<EmployeeDto>>();
 
             services.Configure<ApiBehaviorOptions>(options =>
             {
