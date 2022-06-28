@@ -135,6 +135,13 @@ namespace CompanyEmployees.Controllers
 
         }
 
+        [HttpOptions]
+        public IActionResult GetCompaniesOption()
+        {
+            Response.Headers.Add("Allow", "GET, OPTIONS, POST");
+            return Ok();
+        }
+
         
     }
 }
