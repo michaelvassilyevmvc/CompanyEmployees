@@ -20,6 +20,7 @@ using Microsoft.Extensions.Options;
 using CompanyEmployees.ActionFilters;
 using Entities.DataTransferObjects;
 using Repository.DataShaping;
+using CompanyEmployees.Utility;
 
 namespace CompanyEmployees
 {
@@ -49,12 +50,15 @@ namespace CompanyEmployees
                 .AddNewtonsoftJson()
                 .AddXmlDataContractSerializerFormatters()
                 .AddCustomCsvFormatter();
+            services.AddCustomMediaTypes();
+            services.AddScoped<ValidateMediaTypeAttribute>();
             services.AddScoped<ValidationFilterAttribute>();
             services.AddScoped<ValidateCompanyExistsAttribute>();
             services.AddScoped<ValidateEmployeeForCompanyExistsAttribute>();
             services.AddScoped<ExistsCompanyAttribute>();
             services.AddScoped<ExistsEmployeeForCompanyAttribute>();
             services.AddScoped<IDataShaper<EmployeeDto>,DataShaper<EmployeeDto>>();
+            services.AddScoped<EmployeeLinks>();
 
             services.Configure<ApiBehaviorOptions>(options =>
             {
