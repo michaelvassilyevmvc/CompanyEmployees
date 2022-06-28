@@ -59,6 +59,7 @@ namespace CompanyEmployees
             services.AddScoped<ExistsEmployeeForCompanyAttribute>();
             services.AddScoped<IDataShaper<EmployeeDto>,DataShaper<EmployeeDto>>();
             services.AddScoped<EmployeeLinks>();
+            services.ConfigureVersioning();
 
             services.Configure<ApiBehaviorOptions>(options =>
             {
