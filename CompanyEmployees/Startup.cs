@@ -64,6 +64,7 @@ namespace CompanyEmployees
             services.AddAuthentication();
             services.ConfigureIdentity();
             services.ConfigureJWT(Configuration);
+            services.ConfigureSwagger();
 
             services.Configure<ApiBehaviorOptions>(options =>
             {
@@ -96,10 +97,19 @@ namespace CompanyEmployees
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseSwagger();
+            app.UseSwaggerUI(s =>
+            {
+                s.SwaggerEndpoint("/swagger/v1/swagger.json", "Code Maze API v1");
+                s.SwaggerEndpoint("/swagger/v2/swagger.json", "Code Maze API v2");
+            });
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
+
         }
 
         

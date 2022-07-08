@@ -18,6 +18,7 @@ namespace CompanyEmployees.Controllers
     [ApiVersion("1.0")]
     [Route("api/companies")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "v1")]
     [ResponseCache(CacheProfileName = "120SecondsDuration")]
     public class CompaniesController : ControllerBase
     {
@@ -32,6 +33,10 @@ namespace CompanyEmployees.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Gets the list of all companies
+        /// </summary>
+        /// <returns>The companies list</returns>
         [HttpGet(Name = "GetCompanies"), Authorize]
         public async Task<IActionResult> GetCompanies()
         {
@@ -73,7 +78,18 @@ namespace CompanyEmployees.Controllers
             return Ok(companiesToReturn);
         }
 
+        /// <summary>
+        /// Создает вновь созданной компании
+        /// </summary>
+        /// <param name="company">Компания</param>
+        /// <returns>Недавно созданная компания</returns>
+        /// <response code="201">Возвращает вновь созданный элемент</response>
+        /// <response code="400">Если элемент нулевой</response>
+        /// <response code="422">Есил модель не действительна</response>
         [HttpPost(Name ="CreateCompany")]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(422)]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateCompany([FromBody] CompanyForCreationDto company)
         {
