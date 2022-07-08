@@ -59,7 +59,11 @@ namespace CompanyEmployees
             services.AddScoped<ExistsEmployeeForCompanyAttribute>();
             services.AddScoped<IDataShaper<EmployeeDto>,DataShaper<EmployeeDto>>();
             services.AddScoped<EmployeeLinks>();
+            services.AddScoped<IAuthenticationManager, AuthenticationManager>();
             services.ConfigureVersioning();
+            services.AddAuthentication();
+            services.ConfigureIdentity();
+            services.ConfigureJWT(Configuration);
 
             services.Configure<ApiBehaviorOptions>(options =>
             {
@@ -89,6 +93,7 @@ namespace CompanyEmployees
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

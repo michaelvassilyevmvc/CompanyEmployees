@@ -4,6 +4,7 @@ using CompanyEmployees.ModelBinders;
 using Contracts;
 using Entities.DataTransferObjects;
 using Entities.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -17,6 +18,7 @@ namespace CompanyEmployees.Controllers
     [ApiVersion("1.0")]
     [Route("api/companies")]
     [ApiController]
+    [ResponseCache(CacheProfileName = "120SecondsDuration")]
     public class CompaniesController : ControllerBase
     {
         private readonly IRepositoryManager _repository;
@@ -30,17 +32,17 @@ namespace CompanyEmployees.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet(Name ="GetCompanies")]
+        [HttpGet(Name = "GetCompanies"), Authorize]
         public async Task<IActionResult> GetCompanies()
         {
             var companies = await _repository.Company.GetAllCompaniesAsync(trackChanges: false);
             var companiesDto = _mapper.Map<IEnumerable<CompanyDto>>(companies);
 
             return Ok(companiesDto);
-
         }
 
         [HttpGet("{id}", Name = "CompanyById")]
+        [ResponseCache(Duration = 60)]
         [ServiceFilter(typeof(ExistsCompanyAttribute))]
         public IActionResult GetCompany(Guid id)
         {
