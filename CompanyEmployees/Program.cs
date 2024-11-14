@@ -1,6 +1,8 @@
 using NLog;
 using CompanyEmployees.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
+using Contracts;
+using CompanyEmployees;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,13 +18,19 @@ builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.AddControllers()
     .AddApplicationPart(typeof(CompanyEmployees.Presentation.AssemblyReference).Assembly);
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 
 var app = builder.Build();
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-} else
+
+// получаем LogerService из общих сервисов
+//var logger = app.Services.GetRequiredService<ILoggerManager>();
+//Вызывается обработка исключения с деталями, которые будут видны только разработчику
+//Для production можно задать какую то ограниченную информацию
+//app.ConfigureExceptionHandler(logger);
+app.UseExceptionHandler(opt => { });
+
+if (app.Environment.IsProduction())
 {
     app.UseHsts();
 }
