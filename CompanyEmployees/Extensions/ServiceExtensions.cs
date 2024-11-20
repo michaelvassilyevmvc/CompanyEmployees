@@ -46,5 +46,13 @@ namespace CompanyEmployees.Extensions
             IConfiguration configuration)
             => services.AddDbContext<RepositoryContext>(opts =>
             opts.UseSqlServer(configuration.GetConnectionString("sqlConnection")));
+
+            /// <summary>
+            /// Вызов форматера для получения ответа данных в виде CSV
+            /// </summary>
+            /// <param name="builder"></param>
+            /// <returns></returns>
+            public static IMvcBuilder AddCustomCSVFormatter(this IMvcBuilder builder) =>
+                builder.AddMvcOptions(config => config.OutputFormatters.Add(new CsvOutputFormatter()));
     }
 }
