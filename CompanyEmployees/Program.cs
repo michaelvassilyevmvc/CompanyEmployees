@@ -1,23 +1,30 @@
-using NLog;
+using CompanyEmployees;
 using CompanyEmployees.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
-using Contracts;
-using CompanyEmployees;
+using NLog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 LogManager.Setup().LoadConfigurationFromFile(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
 
-// Add services to the container.
+// Настройка Cors
 builder.Services.ConfigureCors();
+
 builder.Services.ConfigureIISIntegration();
+// Logger
 builder.Services.ConfigureLoggerService();
+// Repo
 builder.Services.ConfigureRepositoryManager();
+//Services
 builder.Services.ConfigureServiceManager();
+// Database
 builder.Services.ConfigureSqlContext(builder.Configuration);
+// Подключение отдельного проекта с контроллерами
 builder.Services.AddControllers()
     .AddApplicationPart(typeof(CompanyEmployees.Presentation.AssemblyReference).Assembly);
+// Automapper
 builder.Services.AddAutoMapper(typeof(Program));
+// Обработка исключений
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 // Дает возможность менять формат с json на xml
 builder.Services.AddControllers(config =>
